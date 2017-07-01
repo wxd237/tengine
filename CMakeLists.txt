@@ -16,10 +16,20 @@ option(USE_THREADS  "threads" OFF )
 option(USE_PCRE      "" ON)
 
 
-FIND_PACKAGE(OpenSSL REQUIRED)
+FIND_PACKAGE(OpenSSL)
+FIND_PACKAGE(PkgConfig REQUIRED)
 
+IF(OPENSSL_FOUND)
 include_directories(${OPENSSL_INCLUDE_DIR})
 link_directories(${OPENSSL_LIBRARIES})
+else()
+    pkg_check_modules(OPENSSL REQUIRED  openssl  )
+    include_directories(${OPENSSL_INCLUDE_DIRS})
+    link_directories(${OPENSSL_LIBRARY_DIRS})
+    link_libraries(${OPENSSL__LIBRARIES})
+ENDIF()
+
+
 
 SET(CORE_SRCS
 	   src/core/nginx.c 
