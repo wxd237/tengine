@@ -1,5 +1,14 @@
 project(nginx)
 
+option(EVENT_AIO  	"with aio module	"  ON)
+option(EVENT_SELECT 	"--with-select_module 	"  ON)
+option(EVENT_POLL      "--with-poll_module  	"  ON)
+option(PROCS           "procs			"  ON)
+option(HTTP            "http 			"  ON)
+option(HTTP_CACHE  	"http cache		"  ON)
+option(NGX_DSO         "ngx_dso  		"  ON)
+option(NGX_IPV6	"ngx_dso  		"  OFF)
+
 SET(CORE_SRCS
 	   src/core/nginx.c 
            src/core/ngx_log.c 
@@ -36,6 +45,7 @@ SET(CORE_SRCS
            src/core/ngx_syslog.c
 )
 
+
 set(UNIX_SRCS
 ${CORE_SRCS} ${EVENT_SRCS}
 	    src/os/unix/ngx_time.c 
@@ -69,7 +79,6 @@ src/proc
 objs
 )
 
-add_library(libcore ${CORE_SRCS})
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
@@ -242,6 +251,8 @@ set(UNIX_SRCS ${CORE_SRCS} ${EVENT_SRCS}
             src/os/unix/ngx_process_cycle.c
     )
 
+
+
 set(POSIX_DEPS src/os/unix/ngx_posix_config.h)
 
 
@@ -311,6 +322,14 @@ set(WIN32_SRCS ${CORE_SRCS} ${EVENT_SRCS}
 
 set(NGX_WIN32_ICONS src/os/win32/nginx.ico)
 set(NGX_WIN32_RC src/os/win32/nginx.rc)
+
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+set(CORE_SRCS
+${LINUX_SRCS}
+${CORE_SRCS}
+)
+endif()
 
 
 # the http modules that have their logging formats
@@ -817,3 +836,5 @@ NGX_HTTP_TFS_MODULE_SRCS
                           src/http/modules/tfs/ngx_http_tfs_server_handler.c 
 )
 
+
+add_library(libcore ${UNIX_SRCS})
