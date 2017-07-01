@@ -1,4 +1,7 @@
 project(nginx)
+cmake_minimum_required(VERSION 2.8)
+
+
 
 option(EVENT_AIO  	"with aio module	"  ON)
 option(EVENT_SELECT 	"--with-select_module 	"  ON)
@@ -8,6 +11,15 @@ option(HTTP            "http 			"  ON)
 option(HTTP_CACHE  	"http cache		"  ON)
 option(NGX_DSO         "ngx_dso  		"  ON)
 option(NGX_IPV6	"ngx_dso  		"  OFF)
+option(USE_OPENSSL              ""    ON)
+option(USE_THREADS  "threads" OFF )
+option(USE_PCRE      "" ON)
+
+
+FIND_PACKAGE(OpenSSL REQUIRED)
+
+include_directories(${OPENSSL_INCLUDE_DIR})
+link_directories(${OPENSSL_LIBRARIES})
 
 SET(CORE_SRCS
 	   src/core/nginx.c 
@@ -838,3 +850,4 @@ NGX_HTTP_TFS_MODULE_SRCS
 
 
 add_library(libcore ${UNIX_SRCS})
+add_executable(nginx ${UNIX_SRCS} )
